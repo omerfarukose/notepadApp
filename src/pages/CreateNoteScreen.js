@@ -11,7 +11,6 @@ export const CreateNoteScreen  = ( ) => {
                 justifyContent: "center"
             }}>
 
-
             <Text> create note screen </Text>
             
         </SafeAreaView>
