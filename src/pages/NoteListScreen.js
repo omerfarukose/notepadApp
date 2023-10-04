@@ -5,37 +5,28 @@ import { heightPercentageToDP as hp, widthPercentageToDP as wp } from "react-nat
 import { navigate } from "../helper/NavigationHelper"
 import Feather from 'react-native-vector-icons/Feather'
 import { SampleNoteList } from "../values/SampleData"
+import { CategoryButton } from "../components/CategoryButton"
+import { ContenCard } from "../components/ContentCard"
 
 export const NoteListScreen = ( ) => {
     
-    const [selectedCategories, setSelectedCategories] = useState([0,1,2,3]);
+    const [selectedCategories, setSelectedCategories] = useState([]);
     const [filteredNotes, setFilteredNotes] = useState(SampleNoteList);
-    const [isFilterSelected, setIsFilterSelected] = useState(false);
 
     useEffect(() => {
-      setFilteredNotes(SampleNoteList.filter((note) => selectedCategories.includes(note.type)));
+        if (selectedCategories.length === 0) {
+            setFilteredNotes(SampleNoteList);
+        } else {
+            setFilteredNotes(SampleNoteList.filter((note) => selectedCategories.includes(note.type)));
+        }
     }, [selectedCategories])
-    
 
     const handleSelectCategory = (type) => {
-
-        if (!isFilterSelected) {
-            setIsFilterSelected(true)
-            setSelectedCategories([type]);
+        if (selectedCategories.includes(type)) {
+            setSelectedCategories(selectedCategories.filter((c) => c !== type));
         } else {
-            if (selectedCategories.includes(type)) {
-                if (selectedCategories.length === 1) {
-                    // reset categories
-                    setIsFilterSelected(false)
-                    setSelectedCategories([0,1,2,3])
-                } else {
-                    // remove from list 
-                    setSelectedCategories(selectedCategories.filter((c) => c !== type));
-                }
-                
-            } else {
-                setSelectedCategories([...selectedCategories, type]);
-            }
+            // add to list
+            setSelectedCategories([...selectedCategories, type]);
         }
     }
 
@@ -60,34 +51,6 @@ export const NoteListScreen = ( ) => {
             </TouchableOpacity>
         )
     }
-    
-    const _renderCategoryCardItem = (type) => {
-
-        let isSelected = selectedCategories.includes(type)
-
-        return(
-            <TouchableOpacity onPress={() => handleSelectCategory(type)}>
-
-                <View
-                    style={{
-                        width: wp(20),
-                        height: wp(20),
-                        backgroundColor: MyColors.noteCategoryColors[type],
-                        borderRadius: 20,
-                        alignItems: "center",
-                        justifyContent: "center"
-                    }}>
-
-                    {
-                        isSelected && isFilterSelected &&
-                        <Feather name="list" size={wp(10)} color="white" />
-                    }
-
-                </View>
-
-            </TouchableOpacity>
-        )
-    } 
 
     const _renderNoteItem = (data) => {
         let type = data?.type;
@@ -96,7 +59,7 @@ export const NoteListScreen = ( ) => {
         let date = data?.date;
 
         return(
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => navigate("NoteDetail", {note: data})}>
 
                 <View
                     style={{
@@ -171,7 +134,7 @@ export const NoteListScreen = ( ) => {
                 backgroundColor: MyColors.mainColor
             }}>
 
-            {/* note list view */}
+            {/* category filter view */}
             <View
                 style={{
                     height: hp(15),
@@ -181,33 +144,38 @@ export const NoteListScreen = ( ) => {
                     justifyContent: "space-evenly",
                 }}>
 
-                { _renderCategoryCardItem(0) }
-                { _renderCategoryCardItem(1) }
-                { _renderCategoryCardItem(2) }
-                { _renderCategoryCardItem(3) }
+                <CategoryButton
+                    type={0}
+                    isSelected={selectedCategories.includes(0)}
+                    onPress={() => handleSelectCategory(0)}/>
+
+                <CategoryButton
+                    type={1}
+                    isSelected={selectedCategories.includes(1)}
+                    onPress={() => handleSelectCategory(1)}/>
+
+                <CategoryButton
+                    type={2}
+                    isSelected={selectedCategories.includes(2)}
+                    onPress={() => handleSelectCategory(2)}/>
+
+                <CategoryButton
+                    type={3}
+                    isSelected={selectedCategories.includes(3)}
+                    onPress={() => handleSelectCategory(3)}/>
 
             </View>
 
             {/* note list view */}
-            <View
-                style={{
-                    backgroundColor: MyColors.cardBackgroundColor,
-                    height: hp(80),
-                    width: wp(100),
-                    position: "absolute",
-                    bottom: 0,
-                    borderTopLeftRadius: 40,
-                    borderTopRightRadius: 40,
-                    alignItems: "center",
-                    overflow: "hidden"
-                }}>
+
+            <ContenCard>
 
                 <FlatList
-                    data={filteredNotes}
-                    renderItem={({item}) => _renderNoteItem(item)}
-                    keyExtractor={(item, index) => index}/>
+                        data={filteredNotes}
+                        renderItem={({item}) => _renderNoteItem(item)}
+                        keyExtractor={(item, index) => index}/>
 
-            </View>
+            </ContenCard>
 
             { _renderFloatingCreateButton() }
 
