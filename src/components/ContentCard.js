@@ -4,7 +4,7 @@ import { MyColors } from "../values/MyColors"
 
 export const ContenCard = (props) => {
 
-    let { height } = props;
+    let { height, style } = props;
 
     return(
         <View
@@ -17,7 +17,8 @@ export const ContenCard = (props) => {
                 borderTopLeftRadius: 40,
                 borderTopRightRadius: 40,
                 alignItems: "center",
-                overflow: "hidden"
+                overflow: "hidden",
+                ...style
             }}>
 
             { props.children }

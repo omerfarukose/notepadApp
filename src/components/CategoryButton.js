@@ -5,7 +5,7 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-nat
 
 export const CategoryButton = (props) => {
 
-    let {type, onPress, isSelected} = props;
+    let {type, onPress, isSelected, selectedIcon = "list"} = props;
 
     return(
         <TouchableOpacity onPress={onPress}>
@@ -22,7 +22,7 @@ export const CategoryButton = (props) => {
 
                 {
                     isSelected &&
-                    <Feather name="list" size={wp(10)} color="white" />
+                    <Feather name={selectedIcon} size={wp(10)} color="white" />
                 }
 
             </View>
